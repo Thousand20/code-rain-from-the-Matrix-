@@ -1,0 +1,43 @@
+# 打开文件
+import os
+with open("data2.txt", encoding='gb18030', errors='ignore') as f:
+    '''encoding是编码集,根据文件的实际保存编码进行获取数据。本该是utf-8,但是
+    非法字符太多，所以采用gb18030。尽管如此还得忽略一些奇怪的字符。'''
+    content = f.read()  # 只读函数。进行文件的一次性读取。中文分句读取容易破坏语句。
+# 数据预处理
+content = content.replace("\n", "")  # 去除换行
+for i in ["。", "，", "；"]:  # 切分位置标记
+    content = content.replace(i, "*")
+
+# 句子列表
+lis = content.split("*")
+
+
+# 定义查询函数
+def find(a, b):  # a:查询的字符串；b:被查询的字符串
+    n1 = len(a)
+    n2 = len(b)
+    if n2 >= n1:
+        for i in range(n2 - n1 + 1):
+            if b[i:i + n1] == a:
+                return True
+    return False
+
+
+# 主函数
+number = []
+a = input('您想查询的字或词：')
+for i in range(len(lis)):
+    b = str(lis[i])
+    if find(a, b):
+        number.append(i)
+
+print("查询结果：")
+print("您所查询的词汇是：{}".format(a))
+if len(number) > 0:
+    print("在所提供的材料中，“{}” 共计在{}个句子中出现过".format(a, len(number)))
+    print("材料如下：")
+    for i in number:
+        print(lis[i])
+else:
+    print("您所查询的词汇在材料中不存在！")
